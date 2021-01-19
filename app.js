@@ -1,26 +1,24 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
 const path = require("path");
 
-const shopRouter = require("./routes/shop");
-const adminRouter = require("./routes/admin");
+const express = require("express");
+const bodyParser = require("body-parser");
 
-const errorController = require("./controller/error");
+const errorController = require("./controllers/error");
 
-const port = 3000;
+const app = express();
 
-app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
+app.set("views", "views");
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
-app.use(shopRouter);
-app.use("/admin", adminRouter);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use("/admin", adminRoutes);
+app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-});
+app.listen(3000);
